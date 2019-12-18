@@ -3,8 +3,20 @@
     <v-card-title>Criar Fila</v-card-title>
     <v-card-text>
       <v-form ref="form">
-        <v-text-field label="Nome"></v-text-field>
-        <v-text-field label="Limite de Senhas" type="number" single-line></v-text-field>
+        <v-text-field label="Nome" v-model="nome"></v-text-field>
+
+        <v-checkbox
+          v-model="checkLimite"
+          :label="checkLimite ? 'Quantidade de senhas limitada' : 'Sem limite de senhas' "
+        ></v-checkbox>
+        <v-text-field
+          label="Limite de Senhas"
+          type="number"
+          single-line
+          :disabled="!checkLimite"
+          v-model="limiteDeSenhas"
+          :required="!checkLimite"
+        ></v-text-field>
         <!-- <v-row justify="space-around" align="center">
           <v-col style="width: 290px; flex: 0 1 auto;">
             <h2>Inicio</h2>
@@ -88,6 +100,9 @@ export default {
   name: "CriarFila",
   data() {
     return {
+      nome: "",
+      limiteDeSenhas: "",
+      checkLimite: false,
       start: null,
       end: null,
       menuInicio: false,
