@@ -39,31 +39,20 @@
 </template>
 
 <script>
-import firebase from "firebase";
+// import firebase from "firebase";
+import { db } from "../main.js";
 
+console.log(
+  db
+    .collection("filas")
+    .orderBy("start")
+    .get()
+);
 export default {
   name: "Filas",
   data() {
     return {
-      filas: firebase
-        .firestore()
-        .collection("filas")
-        .where("usuario", "==", firebase.auth().currentUser.uid)
-        .get()
-        .then(snapshot => {
-          let array = [];
-          if (snapshot.empty) {
-            console.log("Não há filas");
-            // return array;
-          } else {
-            snapshot.forEach(doc => {
-              console.log(doc.id, "=>", doc.data());
-              array.push(doc.data());
-            });
-            console.log(array);
-            return array;
-          }
-        })
+      filas: []
     };
   },
   firestore() {
