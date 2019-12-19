@@ -2,7 +2,10 @@ import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
 import vuetify from './plugins/vuetify';
+import VueFire from 'vuefire'
 import firebase from 'firebase';
+
+Vue.use(VueFire);
 
 const config = {
   apiKey: "AIzaSyB-SUTKSlbwjkitO3tn7NtHrmGNDFq0uc8",
@@ -14,9 +17,12 @@ const config = {
   appId: "1:318596839699:web:58ec6ecb863145677002e6",
   measurementId: "G-XVTS92Y39T"
 };
-firebase.initializeApp(config);
-// export const db = firebase.firestore()
 
+let firebaseapp = firebase.initializeApp(config);
+let db = firebaseapp.firestore();
+
+let filasRef = db.ref('filas');
+console.log(filasRef)
 // Vue.prototype.$firebase = firebase;
 
 Vue.config.productionTip = false
