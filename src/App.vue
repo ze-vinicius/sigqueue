@@ -65,7 +65,7 @@
 
       <v-app-bar fixed app :clipped-right="clipped">
         <v-toolbar-title>
-          <v-btn text to="/">{{title}}</v-btn>
+          <v-btn text to="/"> <v-img :src="require('./assets/logo.png' ) " class="my-3" contain height="60" width='60' ></v-img></v-btn>
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-app-bar-nav-icon
