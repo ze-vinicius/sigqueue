@@ -7,10 +7,7 @@
 
 <script>
 export default {
-  name: "Fila",
-  created() {
-    console.log("FILAAAAAAAAAAA");
-  }
+  name: "Fila"
 };
 </script>
 

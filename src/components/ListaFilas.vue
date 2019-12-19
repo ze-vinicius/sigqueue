@@ -1,10 +1,10 @@
 <template>
   <v-container>
     <v-row dense>
-      <v-col v-for="fila in filas" :key="fila.name" cols="12">
+      <v-col v-for="fila in filas" :key="fila.nome" cols="12">
         <v-card max-width="600" class="mx-auto">
           <div class="d-flex flex-no-wrap justify-space-between">
-            <v-card-title class="headline">{{fila.name}}</v-card-title>
+            <v-card-title class="headline">{{fila.nome}}</v-card-title>
             <v-spacer></v-spacer>
             <div class="text-center ma-4">
               <h2>{{fila.senha}}</h2>
@@ -32,33 +32,43 @@
             </div>
           </v-expand-transition>
         </v-card>
+        <div v-for="item in filas" :key="item.nome">{{item.nome}}</div>
       </v-col>
     </v-row>
   </v-container>
 </template>
 
 <script>
+import firebase from "firebase";
+
 export default {
   name: "Filas",
   data() {
     return {
-      filas: [
-        {
-          name: "Fila para Pizza",
-          senha: "3",
-          ativa: true,
-          show: false
-        },
-        {
-          name: "Fila para Sorvete",
-          senha: "1",
-          senhaLimite: 50,
-          horarioInicio: "08:30",
-          horarioEncerramento: "12:00",
-          ativa: false,
-          show: false
-        }
-      ]
+      filas: firebase
+        .firestore()
+        .collection("filas")
+        .where("usuario", "==", firebase.auth().currentUser.uid)
+        .get()
+        .then(snapshot => {
+          let array = [];
+          if (snapshot.empty) {
+            console.log("Não há filas");
+            // return array;
+          } else {
+            snapshot.forEach(doc => {
+              console.log(doc.id, "=>", doc.data());
+              array.push(doc.data());
+            });
+            console.log(array);
+            return array;
+          }
+        })
+    };
+  },
+  firestore() {
+    return {
+      filas: db.collection("filas").orderBy("start")
     };
   },
   methods: {

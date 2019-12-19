@@ -3,7 +3,7 @@
     <v-card-title>Criar Fila</v-card-title>
     <v-card-text>
       <v-form ref="form">
-        <v-text-field label="Nome" v-model="nome"></v-text-field>
+        <v-text-field label="Nome" v-model="fila.nome"></v-text-field>
 
         <v-checkbox
           v-model="checkLimite"
@@ -14,7 +14,7 @@
           type="number"
           single-line
           :disabled="!checkLimite"
-          v-model="limiteDeSenhas"
+          v-model="fila.limiteDeSenhas"
           :required="!checkLimite"
         ></v-text-field>
         <!-- <v-row justify="space-around" align="center">
@@ -34,7 +34,7 @@
               v-model="menuInicio"
               :close-on-content-click="false"
               :nudge-right="40"
-              :return-value-sync="start"
+              :return-value-sync="fila.start"
               transition="scale-transition"
               offset-y
               max-width="290px"
@@ -42,7 +42,7 @@
             >
               <template v-slot:activator="{ on }">
                 <v-text-field
-                  v-model="start"
+                  v-model="fila.start"
                   label="Inicio"
                   prepend-icon="mdi-clock-outline"
                   readonly
@@ -51,10 +51,10 @@
               </template>
               <v-time-picker
                 v-if="menuInicio"
-                v-model="start"
+                v-model="fila.start"
                 full-width
-                :max="end"
-                @click:minute="$refs.menu.save(start)"
+                :max="fila.end"
+                @click:minute="$refs.menu.save(fila.start)"
               ></v-time-picker>
             </v-menu>
           </v-col>
@@ -64,7 +64,7 @@
               v-model="menuEncerramento"
               :close-on-content-click="false"
               :nudge-right="40"
-              :return-value-sync="end"
+              :return-value-sync="fila.end"
               transition="scale-transition"
               offset-y
               max-width="290px"
@@ -72,7 +72,7 @@
             >
               <template v-slot:activator="{ on }">
                 <v-text-field
-                  v-model="end"
+                  v-model="fila.end"
                   label="Encerramento"
                   prepend-icon="mdi-clock-outline"
                   readonly
@@ -81,33 +81,49 @@
               </template>
               <v-time-picker
                 v-if="menuEncerramento"
-                v-model="end"
+                v-model="fila.end"
                 full-width
-                :min="start"
-                @click:minute="$refs.menu.save(end)"
+                :min="fila.start"
+                @click:minute="$refs.menu.save(fila.end)"
               ></v-time-picker>
             </v-menu>
           </v-col>
         </v-row>
-        <v-btn color="success" x-large>Criar</v-btn>
+        <v-btn color="success" x-large @click="criarFila">Criar</v-btn>
       </v-form>
     </v-card-text>
   </v-card>
 </template>
 
 <script>
+import firebase from "firebase";
+
 export default {
   name: "CriarFila",
   data() {
     return {
-      nome: "",
-      limiteDeSenhas: "",
-      checkLimite: false,
-      start: null,
-      end: null,
+      fila: {
+        nome: "",
+        limiteDeSenhas: "",
+        start: null,
+        end: null,
+        usuario: firebase.auth().currentUser.uid
+      },
       menuInicio: false,
-      menuEncerramento: false
+      menuEncerramento: false,
+      checkLimite: false
     };
+  },
+  methods: {
+    criarFila() {
+      firebase
+        .firestore()
+        .collection("filas")
+        .add(this.fila);
+    }
+  },
+  created() {
+    console.log(firebase.firestore().collection("filas"));
   }
 };
 </script>
