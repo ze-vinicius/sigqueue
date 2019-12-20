@@ -1,13 +1,12 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
-import Fila from "../views/Fila"
-import Senha from "../views/Senha"
 import firebase from 'firebase'
 
 Vue.use(VueRouter)
 
 const routes = [
+
   {
     path: '/',
     name: 'home',
@@ -22,41 +21,39 @@ const routes = [
     component: () => import(/* webpackChunkName: "about" */ '../views/About.vue')
   },
   {
-    path: '/user/criar', component: () => import('../views/user/CriarUsuario.vue')
+    path: '/user/join', component: () => import('../views/user/UserJoin.vue')
   },
   {
-    path: '/user/entrar', component: () => import('../views/user/Entrar.vue')
+    path: '/user/login', component: () => import('../views/user/UserLogin.vue')
   },
   {
-    path: '/fila/', component: Fila,
-    children: [
-      {
-        path: 'criar',
-        name: 'CriarFila',
-        component: () => import('../components/CriarFila.vue'),
-        meta: {
-          requiresAuth: true
-        }
-      },
-      {
-        path: 'lista',
-        name: 'ListarFilas',
-        component: () => import('../components/ListaFilas.vue'),
-        meta: {
-          requiresAuth: true
-        }
-      }
-    ]
+    path: '/queue/', redirect: '/queue/list'
   },
   {
-    path: '/senha/', component: Senha, children: [
-      {
-        path: 'gerar',
-        name: 'GerarSenha',
-        component: () => import('../components/GerarSenha.vue')
-      }
-    ]
-  }
+    path: '/queue/new',
+    component: () => import('../views/queue/NewQueue.vue'),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/queue/list',
+    component: () => import('../views/queue/ListQueue.vue'),
+    meta: {
+      requiresAuth: true
+    }
+  },
+  {
+    path: '/ticket/new/', component: () => import('../views/ticket/NewTicket.vue'),
+  },
+  {
+    path: '/ticket/:id', component: () => import('../views/ticket/Ticket.vue'), props: true,
+  },
+  {
+    path: '*',
+    redirect: '/'
+  },
+
 ]
 
 const router = new VueRouter({
@@ -70,7 +67,7 @@ router.beforeEach((to, from, next) => {
   console.log(usuarioAtual)
   const requiresAuth = to.matched.some(record => record.meta.requiresAuth)
 
-  if (requiresAuth && !usuarioAtual) next('/user/entrar');
+  if (requiresAuth && !usuarioAtual) next('/user/login');
   // else if (!requiresAuth && usuarioAtual) next('/');
   else next()
 })

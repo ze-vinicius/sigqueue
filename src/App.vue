@@ -22,12 +22,12 @@
           </v-list-item-icon>
           <v-list-item-title>Home</v-list-item-title>
           </v-list-item>-->
-          <v-list-item v-for="item in items" :key="item.title" :to="item.to" link>
+          <!-- <v-list-item v-for="item in items" :key="item.title" :to="item.to" link>
             <v-list-item-icon>
               <v-icon>{{item.icon}}</v-icon>
             </v-list-item-icon>
             <v-list-item-title>{{item.title}}</v-list-item-title>
-          </v-list-item>
+          </v-list-item>-->
 
           <v-list-group
             :prepend-icon="item.icon"
@@ -48,7 +48,10 @@
               :to="subitem.to"
               flat
             >
-              <v-list-item-title v-text="subitem.title"></v-list-item-title>
+              <v-list-item-title>{{subitem.title}}</v-list-item-title>
+              <v-list-item-icon>
+                <v-icon>{{subitem.icon}}</v-icon>
+              </v-list-item-icon>
             </v-list-item>
           </v-list-group>
           <v-list-item>
@@ -58,14 +61,22 @@
               @click.stop="usuarioAtual ? sair() : entrar()"
             >{{usuarioAtual? "Sair" : "Entrar"}}</v-btn>-->
             <v-btn v-if="usuarioAtual" block rounded color="red" @click="sair">Sair</v-btn>
-            <v-btn v-else block rounded color="primary" to="/user/entrar">Entrar</v-btn>
+            <v-btn v-else block rounded color="primary" to="/user/login">Entrar</v-btn>
           </v-list-item>
         </v-list>
       </v-navigation-drawer>
 
       <v-app-bar fixed app :clipped-right="clipped">
         <v-toolbar-title>
-          <v-btn text to="/"> <v-img :src="require('./assets/logo.png' ) " class="my-3" contain height="60" width='60' ></v-img></v-btn>
+          <v-btn text to="/">
+            <v-img
+              :src="require('./assets/logo.png' ) "
+              class="my-3"
+              contain
+              height="60"
+              width="60"
+            ></v-img>
+          </v-btn>
         </v-toolbar-title>
         <v-spacer></v-spacer>
         <v-app-bar-nav-icon
@@ -88,7 +99,7 @@
 
 <script>
 // import MenuPrincipal from "./components/MenuPrincipal";
-import firebase from "firebase";
+import firebase from "./plugins/firebase";
 export default {
   name: "App",
   components: {
@@ -99,14 +110,18 @@ export default {
       drawer: false,
       clipped: false,
       title: "Sigqueue",
-      items: [{ title: "Home", icon: "mdi-home", items: {} }],
+      // items: [{ title: "Home", icon: "mdi-home", items: {} }],
       groupItems: [
         {
           title: "Fila",
-          icon: "",
+          icon: "mdi-view-parallel",
           items: [
-            { title: "Criar Fila", icon: "", to: "/fila/criar" },
-            { title: "Minhas Filas", icon: "", to: "/fila/lista" }
+            {
+              title: "Criar Fila",
+              icon: "mdi-plus-box",
+              to: "/queue/new"
+            },
+            { title: "Minhas Filas", icon: "", to: "/queue/list" }
           ],
           auth: firebase.auth().currentUser || true
         },
@@ -114,7 +129,7 @@ export default {
           title: "Senhas",
           icon: "mdi-ticket",
           items: [
-            { title: "Gerar Senha", icon: "", to: "/senha/gerar" },
+            { title: "Gerar Senha", icon: "", to: "/ticket/new/" },
             { title: "Minhas Senhas", icon: "", to: "" }
           ],
           auth: firebase.auth().currentUser ^ true
@@ -136,7 +151,7 @@ export default {
         });
     },
     entrar() {
-      this.$router.replace("/user/entrar").catch(err => {
+      this.$router.replace("/user/login").catch(err => {
         console.log(err.message);
       });
     }
